@@ -1,6 +1,6 @@
 {
   "name": "tcra-num-check",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Tanzanian number validator with reference to the national numbering plan and signaling point code plan",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "numbering",
     "plan"
   ],
-  "author": "",
+  "author": "Emmanuel T. (https://www.github.com/e-ManueI)",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.5.0",
@@ -41,10 +41,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/tcra-num-check.git"
+    "url": "git+https://github.com/e-ManueI/tcra-num-check.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/tcra-num-check/issues"
+    "url": "https://github.com/e-ManueI/tcra-num-check/issues"
   },
-  "homepage": "https://github.com/yourusername/tcra-num-check#readme"
+  "homepage": "https://github.com/e-ManueI/tcra-num-check#readme"
 }
