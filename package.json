@@ -1,0 +1,50 @@
+{
+  "name": "tcra-num-check",
+  "version": "1.0.0",
+  "description": "Tanzanian number validator with reference to the national numbering plan and signaling point code plan",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "tanzania",
+    "phone",
+    "number",
+    "validator",
+    "tcra",
+    "national",
+    "numbering",
+    "plan"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/tcra-num-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/tcra-num-check/issues"
+  },
+  "homepage": "https://github.com/yourusername/tcra-num-check#readme"
+}
