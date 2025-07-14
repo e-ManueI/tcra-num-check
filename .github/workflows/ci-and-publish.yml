@@ -1,0 +1,39 @@
+# CI & Publish Workflow
+#
+# Note: Pull request reviews before merging, will be set up a branch protection rule in your repository settings for 'main'.
+#
+# The 'test' job is currently commented out/disabled. Uncomment to enable testing before publish.
+
+name: CI & Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '18'
+  #     - run: npm ci
+  #     - run: npm test
+
+  publish-npm:
+    # needs: test  # Uncomment this line if you enable the test job above
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run build # Uncomment if you have a build step
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
