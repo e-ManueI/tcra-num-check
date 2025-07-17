@@ -1,10 +1,10 @@
-import { TCRANumberValidator } from "./validator";
+import { TCRANumberValidator } from "../src/validator";
 import {
   NumberType,
   PortabilityStatus,
   NumberStatus,
   CarrierSelection,
-} from "./types";
+} from "../src/types";
 
 describe("TCRANumberValidator", () => {
   describe("Mode System", () => {
@@ -357,7 +357,7 @@ describe("TCRANumberValidator", () => {
       });
     });
 
-    test("should validate Tigo mobile numbers", () => {
+    test("should validate Tigo/Yas mobile numbers", () => {
       const tigoNumbers = [
         "0812345678",
         "0823456789",
@@ -374,7 +374,7 @@ describe("TCRANumberValidator", () => {
         const result = validator.validate(number);
         expect(result.isValid).toBe(true);
         expect(result.numberType).toBe(NumberType.MOBILE);
-        expect(result.operator).toBe("Tigo Tanzania");
+        expect(result.operator).toBe("Tigo/Yas Tanzania");
         expect(result.errors).toHaveLength(0);
       });
     });

@@ -1,6 +1,6 @@
 {
   "name": "tcra-num-check",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Tanzanian number validator with reference to the national numbering plan and signaling point code plan",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
