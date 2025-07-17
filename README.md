@@ -4,7 +4,7 @@ A comprehensive TypeScript library for validating Tanzanian phone numbers accord
 
 ## Features
 
-- ✅ **Mobile Number Validation** - Supports all major Tanzanian mobile operators (Vodacom, Airtel, Tigo, Halotel, Zantel)
+- ✅ **Mobile Number Validation** - Supports all major Tanzanian mobile operators (Vodacom, Airtel, Tigo/Yas, Halotel, Zantel)
 - ✅ **Fixed Line Validation** - Validates landline numbers with regional identification
 - ✅ **Emergency Services** - Validates emergency numbers (112, 113, 114, 115, 116, 117, 118, 119)
 - ✅ **Short Codes** - Supports short code validation (100-109, 150-159)
@@ -376,11 +376,11 @@ interface EmergencyService {
 
 | Operator | Prefixes | Example | Portability |
 |----------|----------|---------|-------------|
-| Vodacom Tanzania | 61-69 | 0712345678 | ✅ Portable |
-| Airtel Tanzania | 71-79 | 0712345678 | ✅ Portable |
-| Tigo Tanzania | 81-89 | 0812345678 | ✅ Portable |
-| Halotel | 91-99 | 0912345678 | ✅ Portable |
-| Zantel | 68-69 | 0681234567 | ✅ Portable |
+| Vodacom Tanzania | 74,75,76 | 0743456789 | ✅ Portable |
+| Airtel Tanzania | 68, 69, 78 | 0683456789| ✅ Portable |
+| Tigo/Yas Tanzania | 65, 67, 71, 77 | 0712345678 | ✅ Portable |
+| Halotel | 61, 62 | 0612345678 | ✅ Portable |
+| Smile | 66 | 0661234567 | ✅ Portable |
 
 ### Fixed Line Numbers
 

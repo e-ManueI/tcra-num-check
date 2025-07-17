@@ -10,44 +10,26 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
   countryCode: "255",
   nationalPrefix: "0",
 
-  // Mobile prefixes (7-digit numbers after prefix)
+  // Mobile prefixes (4-digit access codes: 06YA or 07YA format)
+  // Format: 06YA XXXXXX or 07YA XXXXXX (10 digits total)
+  // 06/07: Access code for "Find Me Anywhere" services
+  // A: Destination code (digit 2)
+  // Y: Operator identifier (digit 3)
   mobilePrefixes: [
-    "61",
-    "62",
-    "63",
-    "64",
-    "65",
-    "66",
-    "67",
-    "68",
-    "69", // Vodacom
-    "71",
-    "72",
-    "73",
-    "74",
-    "75",
-    "76",
-    "77",
-    "78",
-    "79", // Airtel
-    "81",
-    "82",
-    "83",
-    "84",
-    "85",
-    "86",
-    "87",
-    "88",
-    "89", // Tigo
-    "91",
-    "92",
-    "93",
-    "94",
-    "95",
-    "96",
-    "97",
-    "98",
-    "99", // Halotel
+    "061", // Viettel Tanzania PLC (Halotel)
+    "062", // Viettel Tanzania PLC (Halotel)
+    "065", // Honora Tanzania PLC (Tigo/Yas)
+    "066", // Smile Communications Tanzania Limited
+    "067", // Honora Tanzania PLC (Tigo/Yas)
+    "068", // Airtel Tanzania PLC
+    "069", // Airtel Tanzania PLC
+    "071", // Honora Tanzania PLC (Tigo/Yas)
+    "077", // Honora Tanzania PLC (Tigo/Yas)
+    "073", // Tanzania Telecommunications Corporation (TCC)
+    "074", // Vodacom Tanzania PLC
+    "075", // Vodacom Tanzania PLC
+    "076", // Vodacom Tanzania PLC
+    "078", // Airtel Tanzania PLC
   ],
 
   // Fixed line prefixes (7-digit numbers after prefix)
@@ -96,32 +78,30 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
     "90", // Mwanza
   ],
 
-  // Toll-free numbers
+  // Toll-free numbers (0800 YY XXXX format)
+  // 0800: National Free phone (Local Toll-Free)
+  // 0808: International Rate Services (Special Service)
   tollFreePrefixes: [
-    "0800",
-    "0801",
-    "0802",
-    "0803",
-    "0804",
-    "0805",
-    "0806",
-    "0807",
-    "0808",
-    "0809",
+    "0800", // National Free phone (Local Toll-Free)
+    "0808", // International Rate Services (Special Service)
   ],
 
-  // Premium rate numbers
+  // Premium rate numbers (090X YY XXXX format)
+  // 0900: Information Services (Premium Services)
+  // 0901: Entertainments Services (Multi-media Services)
+  // 0902: Competitions/Tele-voting
+  // 0903-0909: Spare
   premiumRatePrefixes: [
-    "0900",
-    "0901",
-    "0902",
-    "0903",
-    "0904",
-    "0905",
-    "0906",
-    "0907",
-    "0908",
-    "0909",
+    "0900", // Information Services (Premium Services)
+    "0901", // Entertainments Services (Multi-media Services)
+    "0902", // Competitions/Tele-voting
+    "0903", // Spare
+    "0904", // Spare
+    "0905", // Spare
+    "0906", // Spare
+    "0907", // Spare
+    "0908", // Spare
+    "0909", // Spare
   ],
 
   // Shared cost numbers
@@ -274,7 +254,7 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
       code: "255-003-001",
       description: "Tigo STP-1 Dar es Salaam",
       type: "STP",
-      operator: "Tigo Tanzania",
+      operator: "Tigo/Yas Tanzania",
       location: "Dar es Salaam",
       status: "active",
     },
@@ -282,7 +262,7 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
       code: "255-003-101",
       description: "Tigo HLR-1",
       type: "HLR",
-      operator: "Tigo Tanzania",
+      operator: "Tigo/Yas Tanzania",
       location: "Dar es Salaam",
       status: "active",
     },
@@ -342,7 +322,120 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
     },
   ],
 
+  // Specific Toll-Free Services with Operator Assignments
+  tollFreeServices: [
+    {
+      prefix: "0800",
+      subPrefix: "11",
+      operator: "Tanzania Telecommunications Corporation",
+      service: "Local Toll Free",
+      status: "Operational",
+      description: "National Free phone (Local Toll-Free)",
+    },
+    {
+      prefix: "0800",
+      subPrefix: "12",
+      operator: "Honora Tanzania PLC",
+      service: "Local Toll Free",
+      status: "Operational",
+      description: "National Free phone (Local Toll-Free)",
+    },
+    {
+      prefix: "0800",
+      subPrefix: "71",
+      operator: "Honora Tanzania PLC",
+      service: "Local Toll Free",
+      status: "Operational",
+      description: "National Free phone (Local Toll-Free)",
+    },
+    {
+      prefix: "0800",
+      subPrefix: "75",
+      operator: "Vodacom Tanzania PLC",
+      service: "Local Toll Free",
+      status: "Operational",
+      description: "National Free phone (Local Toll-Free)",
+    },
+    {
+      prefix: "0800",
+      subPrefix: "78",
+      operator: "Airtel Tanzania PLC",
+      service: "Local Toll Free",
+      status: "Operational",
+      description: "National Free phone (Local Toll-Free)",
+    },
+    {
+      prefix: "0808",
+      subPrefix: "11",
+      operator: "Tanzania Telecommunications Corporation",
+      service: "International Toll Number",
+      status: "Operational",
+      description: "International Rate Services (Special Service)",
+    },
+    {
+      prefix: "0808",
+      subPrefix: "00",
+      operator: "Vodacom Tanzania PLC",
+      service: "International Toll Number",
+      status: "Operational",
+      description: "International Rate Services (Special Service)",
+    },
+  ],
+
+  // Specific Premium Rate Services with Operator Assignments
+  premiumRateServices: [
+    {
+      prefix: "0901",
+      subPrefix: "00",
+      operator: "Airtel Tanzania PLC",
+      service: "Entertainments Services (Multi-media Services)",
+      status: "Operational",
+      description: "Entertainments Services (Multi-media Services)",
+    },
+    {
+      prefix: "0901",
+      subPrefix: "12",
+      operator: "Vodacom Tanzania PLC",
+      service: "Entertainments Services (Multi-media Services)",
+      status: "Operational",
+      description: "Entertainments Services (Multi-media Services)",
+    },
+    {
+      prefix: "0901",
+      subPrefix: "65",
+      operator: "Honora Tanzania PLC",
+      service: "Entertainments Services (Multi-media Services)",
+      status: "Operational",
+      description: "Entertainments Services (Multi-media Services)",
+    },
+    {
+      prefix: "0901",
+      subPrefix: "76",
+      operator: "Vodacom Tanzania PLC",
+      service: "Entertainments Services (Multi-media Services)",
+      status: "Operational",
+      description: "Entertainments Services (Multi-media Services)",
+    },
+    {
+      prefix: "0901",
+      subPrefix: "22",
+      operator: "Viettel Tanzania PLC",
+      service: "Entertainments Services (Multi-media Services)",
+      status: "Operational",
+      description: "Entertainments Services (Multi-media Services)",
+    },
+    {
+      prefix: "0900",
+      subPrefix: "01",
+      operator: "Vodacom Tanzania PLC",
+      service: "Information Services (Premium Services)",
+      status: "Operational",
+      description: "Information Services (Premium Services)",
+    },
+  ],
+
   // Emergency Services
+  // TODO: ADD MORE EMERGENCY SERVICES E.G 110
   emergencyServices: [
     {
       code: "112",
@@ -397,36 +490,58 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
   // Enhanced operator information
   operators: [
     {
-      name: "Vodacom Tanzania",
-      codes: ["61", "62", "63", "64", "65", "66", "67", "68", "69"],
+      name: "Viettel Tanzania PLC",
+      codes: ["061", "062"],
       type: NumberType.MOBILE,
       licenseNumber: "TCRA/LIC/MOB/001",
       serviceAreas: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya"],
       portabilitySupported: true,
+      aliases: ["Halotel"],
     },
     {
-      name: "Airtel Tanzania",
-      codes: ["71", "72", "73", "74", "75", "76", "77", "78", "79"],
+      name: "Honora Tanzania PLC",
+      codes: ["065", "067", "071", "077"],
       type: NumberType.MOBILE,
       licenseNumber: "TCRA/LIC/MOB/002",
-      serviceAreas: ["Dar es Salaam", "Mwanza", "Arusha", "Dodoma", "Mbeya"],
+      serviceAreas: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya"],
       portabilitySupported: true,
+      aliases: ["Tigo", "Yas"],
     },
     {
-      name: "Tigo Tanzania",
-      codes: ["81", "82", "83", "84", "85", "86", "87", "88", "89"],
+      name: "Smile Communications Tanzania Limited",
+      codes: ["066"],
       type: NumberType.MOBILE,
       licenseNumber: "TCRA/LIC/MOB/003",
       serviceAreas: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya"],
       portabilitySupported: true,
+      aliases: ["Smile"],
     },
     {
-      name: "Halotel",
-      codes: ["91", "92", "93", "94", "95", "96", "97", "98", "99"],
+      name: "Airtel Tanzania PLC",
+      codes: ["068", "069", "078"],
       type: NumberType.MOBILE,
       licenseNumber: "TCRA/LIC/MOB/004",
+      serviceAreas: ["Dar es Salaam", "Mwanza", "Arusha", "Dodoma", "Mbeya"],
+      portabilitySupported: true,
+      aliases: ["Airtel"],
+    },
+    {
+      name: "Vodacom Tanzania PLC",
+      codes: ["074", "075", "076"],
+      type: NumberType.MOBILE,
+      licenseNumber: "TCRA/LIC/MOB/005",
       serviceAreas: ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Mbeya"],
       portabilitySupported: true,
+      aliases: ["Vodacom"],
+    },
+    {
+      name: "Tanzania Telecommunications Corporation (TCC)",
+      codes: ["073"],
+      type: NumberType.MOBILE,
+      licenseNumber: "TCRA/LIC/MOB/006",
+      serviceAreas: ["Dar es Salaam", "Arusha", "Dodoma", "Mbeya", "Mwanza"],
+      portabilitySupported: true,
+      aliases: ["TTCL"],
     },
     {
       name: "TTCL",
@@ -435,14 +550,7 @@ export const TANZANIAN_NUMBERING_PLAN: NumberingPlan = {
       licenseNumber: "TCRA/LIC/FIX/001",
       serviceAreas: ["Dar es Salaam", "Arusha", "Dodoma", "Mbeya", "Mwanza"],
       portabilitySupported: false,
-    },
-    {
-      name: "Zantel",
-      codes: ["68", "69"],
-      type: NumberType.MOBILE,
-      licenseNumber: "TCRA/LIC/MOB/005",
-      serviceAreas: ["Zanzibar", "Dar es Salaam"],
-      portabilitySupported: true,
+      aliases: ["TTCL"],
     },
   ],
 

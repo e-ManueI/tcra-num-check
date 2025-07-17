@@ -83,6 +83,8 @@ export type {
   OperatorInfo,
   SignalingPointCode,
   EmergencyService,
+  TollFreeService,
+  PremiumRateService,
   PortabilityStatus,
   NumberStatus,
   CarrierSelection,

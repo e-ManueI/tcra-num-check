@@ -6,6 +6,7 @@ export interface NumberValidationResult {
   isValid: boolean;
   numberType: NumberType;
   operator?: string;
+  aliases?: string[];
   region?: string;
   errors: string[];
   warnings: string[];
@@ -95,6 +96,7 @@ export interface OperatorInfo {
   licenseNumber?: string;
   serviceAreas?: string[];
   portabilitySupported?: boolean;
+  aliases?: string[];
 }
 
 export interface SignalingPointCode {
@@ -120,6 +122,26 @@ export interface EmergencyService {
   service: string;
   description: string;
   priority: "high" | "medium" | "low";
+
+  // TODO: ADD STATUS FIELD
+}
+
+export interface TollFreeService {
+  prefix: string;
+  subPrefix: string;
+  operator: string;
+  service: string;
+  status: string;
+  description: string;
+}
+
+export interface PremiumRateService {
+  prefix: string;
+  subPrefix: string;
+  operator: string;
+  service: string;
+  status: string;
+  description: string;
 }
 
 export interface NumberingPlan {
@@ -137,6 +159,8 @@ export interface NumberingPlan {
   shortCodePrefixes: string[];
   signalingPointCodes: SignalingPointCode[];
   emergencyServices: EmergencyService[];
+  tollFreeServices: TollFreeService[];
+  premiumRateServices: PremiumRateService[];
   operators: OperatorInfo[];
   // Enhanced fields
   numberPortability?: {

@@ -25,7 +25,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "tests/mobile-validation.test.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

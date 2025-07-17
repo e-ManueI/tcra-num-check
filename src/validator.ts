@@ -120,6 +120,9 @@ export class TCRANumberValidator {
       if (validation.operator) {
         result.operator = validation.operator;
       }
+      if (validation.aliases) {
+        result.aliases = validation.aliases;
+      }
       if (validation.region) {
         result.region = validation.region;
       }
@@ -219,6 +222,11 @@ export class TCRANumberValidator {
       return false;
     }
 
+    // Check if the cleaned number contains only digits
+    if (!/^\d+$/.test(cleanedNumber)) {
+      return false;
+    }
+
     // If international format is allowed, check for country code
     if (
       features.allowInternational &&
@@ -251,21 +259,42 @@ export class TCRANumberValidator {
     let nationalNumber: string;
     let hasCountryCode = false;
 
-    // Check if number starts with country code
-    if (cleanedNumber.startsWith(this.numberingPlan.countryCode)) {
-      nationalNumber = cleanedNumber.substring(
-        this.numberingPlan.countryCode.length
-      );
+    // Accept +255, 255, or 0 as Tanzanian national prefixes
+    if (cleanedNumber.startsWith("255")) {
+      nationalNumber = cleanedNumber.substring(3);
       hasCountryCode = true;
+    } else if (cleanedNumber.startsWith("0")) {
+      nationalNumber = cleanedNumber;
+    } else if (cleanedNumber.startsWith("7") || cleanedNumber.startsWith("6")) {
+      // Tanzanian mobile numbers can be written as 7XXXXXXXX (without 0 or 255)
+      nationalNumber = "0" + cleanedNumber;
     } else {
       nationalNumber = cleanedNumber;
     }
 
-    // Remove national prefix if present (for all number types)
+    // Remove national prefix if present (for all number types except mobile)
+    // Mobile numbers in Tanzania already include the "0" as part of their format
     if (nationalNumber.startsWith(this.numberingPlan.nationalPrefix)) {
-      nationalNumber = nationalNumber.substring(
-        this.numberingPlan.nationalPrefix.length
-      );
+      // Check if this might be a mobile number (starts with 06 or 07)
+      const potentialMobilePrefix = nationalNumber.substring(0, 2);
+      if (potentialMobilePrefix === "06" || potentialMobilePrefix === "07") {
+        // Keep the "0" for mobile numbers
+        // nationalNumber remains unchanged
+      } else {
+        // Remove the "0" for other number types
+        nationalNumber = nationalNumber.substring(
+          this.numberingPlan.nationalPrefix.length
+        );
+      }
+    }
+
+    // For international numbers that might be mobile, add "0" prefix if missing
+    if (hasCountryCode && nationalNumber.length === 9) {
+      // Check if this could be a mobile number (starts with 6 or 7)
+      const potentialMobilePrefix = nationalNumber.substring(0, 1);
+      if (potentialMobilePrefix === "6" || potentialMobilePrefix === "7") {
+        nationalNumber = "0" + nationalNumber;
+      }
     }
 
     return {
@@ -285,6 +314,7 @@ export class TCRANumberValidator {
       isValid: false,
       numberType: NumberType.INVALID as NumberType,
       operator: undefined as string | undefined,
+      aliases: undefined as string[] | undefined,
       region: undefined as string | undefined,
       signalingPointCode: undefined as string | undefined,
       emergencyService: undefined as string | undefined,
@@ -423,13 +453,25 @@ export class TCRANumberValidator {
       }
     }
 
-    // Check mobile numbers (9 digits total: 2 prefix + 7 subscriber)
-    if (features.validateMobile && nationalNumber.length === 9) {
-      const prefix = nationalNumber.substring(0, 2);
-      if (this.numberingPlan.mobilePrefixes.includes(prefix)) {
+    // Check mobile numbers (10 digits total: 3-digit operator prefix + 7-digit subscriber)
+    // Format: 06YA XXXXXX or 07YA XXXXXX
+    if (features.validateMobile && nationalNumber.length === 10) {
+      const accessCode = nationalNumber.substring(0, 2); // 06 or 07
+      const operatorPrefix = nationalNumber.substring(0, 3); // 06A (3-digit operator prefix)
+
+      // Validate access code (must be 06 or 07)
+      if (accessCode !== "06" && accessCode !== "07") {
+        result.errors.push(
+          "Mobile number must start with access code 06 or 07"
+        );
+        return result;
+      }
+
+      if (this.numberingPlan.mobilePrefixes.includes(operatorPrefix)) {
         result.isValid = true;
         result.numberType = NumberType.MOBILE;
-        result.operator = this.getOperatorByPrefix(prefix);
+        result.operator = this.getOperatorByPrefix(operatorPrefix);
+        result.aliases = this.getOperatorAlias(operatorPrefix);
         result.numberStatus = NumberStatus.ACTIVE;
         result.carrierSelection = CarrierSelection.AUTOMATIC;
         if (features.validatePortability) {
@@ -437,6 +479,20 @@ export class TCRANumberValidator {
             NumberType.MOBILE
           );
         }
+        return result;
+      } else {
+        result.errors.push("Unknown mobile operator prefix");
+        return result;
+      }
+    }
+
+    // Check 10-digit numbers that don't start with 06 or 07 (invalid mobile format)
+    if (features.validateMobile && nationalNumber.length === 10) {
+      const accessCode = nationalNumber.substring(0, 2);
+      if (accessCode !== "06" && accessCode !== "07") {
+        result.errors.push(
+          "Mobile number must start with access code 06 or 07"
+        );
         return result;
       }
     }
@@ -448,6 +504,7 @@ export class TCRANumberValidator {
         result.isValid = true;
         result.numberType = NumberType.FIXED_LINE;
         result.operator = this.getOperatorByPrefix(prefix);
+        result.aliases = this.getOperatorAlias(prefix);
         result.region = this.getRegionByPrefix(prefix);
         result.numberStatus = NumberStatus.ACTIVE;
         result.carrierSelection = CarrierSelection.NOT_APPLICABLE;
@@ -477,8 +534,19 @@ export class TCRANumberValidator {
   }
 
   /**
+   * Gets operator alias by prefix
+   **/
+  private getOperatorAlias(prefix: string): string[] | undefined {
+    const operator = this.numberingPlan.operators.find((op) =>
+      op.codes.includes(prefix)
+    );
+    return operator?.aliases || [];
+  }
+
+  /**
    * Gets region by prefix
    */
+  // TODO: Validate this functions truthfullness to real docs
   private getRegionByPrefix(prefix: string): string | undefined {
     const regionMap: Record<string, string> = {
       "22": "Dar es Salaam",
@@ -593,7 +661,16 @@ export class TCRANumberValidator {
       return null;
     }
 
-    return `+${this.numberingPlan.countryCode}${parts.nationalNumber}`;
+    // For mobile numbers, remove the "0" prefix for international format
+    let nationalNumber = parts.nationalNumber;
+    if (
+      result.numberType === NumberType.MOBILE &&
+      nationalNumber.startsWith("0")
+    ) {
+      nationalNumber = nationalNumber.substring(1);
+    }
+
+    return `+${this.numberingPlan.countryCode}${nationalNumber}`;
   }
 
   /**
@@ -611,7 +688,16 @@ export class TCRANumberValidator {
         this.numberingPlan.countryCode.length
       );
     }
-    if (!nationalNumber.startsWith(this.numberingPlan.nationalPrefix)) {
+    // For mobile numbers, ensure the "0" prefix is present
+    if (
+      result.numberType === NumberType.MOBILE &&
+      !nationalNumber.startsWith("0")
+    ) {
+      nationalNumber = "0" + nationalNumber;
+    } else if (
+      result.numberType !== NumberType.MOBILE &&
+      !nationalNumber.startsWith(this.numberingPlan.nationalPrefix)
+    ) {
       nationalNumber = this.numberingPlan.nationalPrefix + nationalNumber;
     }
     return nationalNumber;
@@ -666,6 +752,8 @@ export class TCRANumberValidator {
                 prefix,
                 type: NumberType.MOBILE,
                 operator: this.getOperatorByPrefix(prefix),
+                accessCode: prefix.substring(0, 2), // 06 or 07
+                destinationCode: prefix.substring(2, 3), // A (operator identifier)
               }))
             );
           }
@@ -719,9 +807,9 @@ export class TCRANumberValidator {
       byRegion: {} as Record<string, number>,
     };
 
-    // Calculate mobile numbers
+    // Calculate mobile numbers (10-digit format: 4-digit prefix + 6-digit subscriber)
     if (this.features.validateMobile) {
-      const mobileCount = this.numberingPlan.mobilePrefixes.length * 10000000; // 10M per prefix
+      const mobileCount = this.numberingPlan.mobilePrefixes.length * 1000000; // 1M per prefix (6 digits)
       stats.byType[NumberType.MOBILE] = mobileCount;
       stats.totalNumbers += mobileCount;
     }
@@ -761,7 +849,11 @@ export class TCRANumberValidator {
 
     // Calculate by operator
     this.numberingPlan.operators.forEach((operator) => {
-      stats.byOperator[operator.name] = operator.codes.length * 10000000;
+      if (operator.type === NumberType.MOBILE) {
+        stats.byOperator[operator.name] = operator.codes.length * 1000000; // 1M per prefix (6 digits)
+      } else {
+        stats.byOperator[operator.name] = operator.codes.length * 10000000; // 10M per prefix (7 digits for fixed line)
+      }
     });
 
     // Calculate by region
